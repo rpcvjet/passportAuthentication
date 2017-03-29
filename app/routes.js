@@ -62,7 +62,7 @@ module.exports = function(app, passport) {
     req.logout();
     res.redirect('/');
   });
-};
+
 
     // =====================================
     // TWITTER ROUTES ======================
@@ -79,7 +79,7 @@ app.get('/auth/twitter/callback',
 
 
 
-
+};
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
 
