@@ -68,18 +68,32 @@ module.exports = function(app, passport) {
     // TWITTER ROUTES ======================
     // =====================================
     // route for twitter authentication and login
-app.get('/auth/twitter', passport.authenticate('twitter'));
+  app.get('/auth/twitter', passport.authenticate('twitter'));
 
-    // handle the callback after twitter has authenticated the user
-app.get('/auth/twitter/callback',
-    passport.authenticate('twitter', {
-      successRedirect : '/profile',
-      failureRedirect : '/'
-    }));
+      // handle the callback after twitter has authenticated the user
+  app.get('/auth/twitter/callback',
+      passport.authenticate('twitter', {
+        successRedirect : '/profile',
+        failureRedirect : '/'
+      }));
+    // =====================================
+    // GOOGLE ROUTES =======================
+    // =====================================
+          // send to google to do the authentication
+          // profile gets us their basic information including their name
+          // email gets their emails
+  app.get('/auth/google', passport.authenticate('google', { scope : ['profile', 'email'] }));
 
-
+          // the callback after google has authenticated the user
+  app.get('/auth/google/callback',
+                  passport.authenticate('google', {
+                    successRedirect : '/profile',
+                    failureRedirect : '/'
+                  }));
 
 };
+
+
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
 
