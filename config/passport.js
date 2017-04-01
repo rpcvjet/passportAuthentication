@@ -5,6 +5,7 @@
 var LocalStrategy   = require('passport-local').Strategy;
 var TwitterStrategy  = require('passport-twitter').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 
 // load up the user model
 var User = require('../app/models/user');
@@ -197,7 +198,35 @@ module.exports = function(passport) {
           }
         });
       });
+    })); //end of google Strategy
 
-    }));
+  passport.use(new LinkedInStrategy({
+    clientID: configAuth.linkedin.clientID,
+    consumerSecret: configAuth.linkedin.clientSecret,
+    callbackURL: configAuth.linkedin.callbackURL
+  },
+  // linkedin sends back the tokens and progile info
+  function(token, tokenSecret, profile, done) {
+    var searchQuery = {
+      name: profile.displayName
+    };
+    var updates = {
+      name: profile.displayName,
+      someID: profile.id
+    };
+    var options = {
+      upsert: true
+    };
+    // update the user if s/he exists or add a new user
+    User.findOneAndUpdate(searchQuery, updates, options, function(err, user) {
+      if(err) {
+        return done(err);
+      } else {
+        return done(null, user);
+      }
+    });
+  }
+));
+
 
 }; //end of module
