@@ -202,11 +202,14 @@ module.exports = function(passport) {
 
   passport.use(new LinkedInStrategy({
     clientID: configAuth.linkedin.clientID,
-    consumerSecret: configAuth.linkedin.clientSecret,
+    clientSecret: configAuth.linkedin.clientSecret,
     callbackURL: configAuth.linkedin.callbackURL
   },
-  // linkedin sends back the tokens and progile info
+
+
+  // linkedin sends back the tokens and profile info
   function(token, tokenSecret, profile, done) {
+
     var searchQuery = {
       name: profile.displayName
     };
