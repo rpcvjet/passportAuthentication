@@ -228,6 +228,17 @@ module.exports = function(passport) {
         return done(null, user);
       }
     });
+  })); //end of linkedin
+
+  passport.use(new GitHubStrategy({
+    clientID: configAuth.github.clientID,
+    clientSecret: configAuth.github.clientSecret,
+    callbackURL: configAuth.github.callbackURL
+  },
+  function(accessToken, refreshToken, profile, done) {
+    User.findOrCreate({ githubId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
   }
 ));
 
