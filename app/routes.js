@@ -106,8 +106,19 @@ module.exports = function(app, passport) {
 
 
 
-};
 
+//********************GITHUB*************************************
+
+  app.get('/auth/github', passportGithub.authenticate('github', { scope: [ 'user:email' ] }));
+
+  app.get('/auth/github/callback',
+  passportGithub.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication
+    res.json(req.user);
+  });
+
+};
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {

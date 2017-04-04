@@ -6,6 +6,7 @@ var LocalStrategy   = require('passport-local').Strategy;
 var TwitterStrategy  = require('passport-twitter').Strategy;
 var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
+var GitHubStrategy = require('passport-github2').Strategy;
 
 // load up the user model
 var User = require('../app/models/user');
@@ -202,11 +203,14 @@ module.exports = function(passport) {
 
   passport.use(new LinkedInStrategy({
     clientID: configAuth.linkedin.clientID,
-    consumerSecret: configAuth.linkedin.clientSecret,
+    clientSecret: configAuth.linkedin.clientSecret,
     callbackURL: configAuth.linkedin.callbackURL
   },
-  // linkedin sends back the tokens and progile info
+
+
+  // linkedin sends back the tokens and profile info
   function(token, tokenSecret, profile, done) {
+
     var searchQuery = {
       name: profile.displayName
     };
@@ -224,6 +228,17 @@ module.exports = function(passport) {
       } else {
         return done(null, user);
       }
+    });
+  })); //end of linkedin
+
+  passport.use(new GitHubStrategy({
+    clientID: configAuth.github.clientID,
+    clientSecret: configAuth.github.clientSecret,
+    callbackURL: configAuth.github.callbackURL
+  },
+  function(accessToken, refreshToken, profile, done) {
+    User.findOrCreate({ githubId: profile.id }, function (err, user) {
+      return done(err, user);
     });
   }
 ));
